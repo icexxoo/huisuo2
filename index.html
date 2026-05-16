@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- 预加载关键资源 -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    
+    <!-- 微信分享OGP标签 -->
+    <meta property="og:title" content="私享汇·高端私人会所 - 尊享私密空间，品味珍馐美馔">
+    <meta property="og:description" content="私享汇专为城市精英打造高端私人会所，商务宴请、亲友聚会、私人派对的理想之选，消费即享麻将、台球、KTV免费畅玩！">
+    <meta property="og:image" content="https://icexxoo.github.io/huisuo.github.io/wxkp.jpg">
+    <meta property="og:url" content="https://icexxoo.github.io/huisuo.github.io/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="私享汇·高端私人会所">
+    
+    <!-- 微信浏览器适配 -->
+    <meta name="wechat-webview-api-version" content="1.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>私享汇·高端私人会所</title>
+    
+    <!-- 精简Tailwind引入 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: '#D4AF37',
+                        darkgold: '#B8860B',
+                        goldlight: '#E8C860',
+                        dark: '#1A1A1A',
+                        darker: '#0F0F0F',
+                    },
+                    fontFamily: {
+                        serif: ['Noto Serif SC', 'serif'],
+                        sans: ['Noto Sans', 'sans-serif'],
+                    },
+                    // 只保留核心动画，移除所有冗余
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.7s ease-out forwards',
+                        'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
+                        'shimmer': 'shimmer 2s linear infinite',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(25px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        pulseGlow: {
+                            '0%, 100%': { boxShadow: '0 0 8px rgba(212, 175, 55, 0.3)' },
+                            '50%': { boxShadow: '0 0 20px rgba(212, 175, 55, 0.5)' }
+                        },
+                        shimmer: {
+                            '0%': { backgroundPosition: '-200% 0' },
+                            '100%': { backgroundPosition: '200% 0' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            }
+            .text-shadow-lg {
+                text-shadow: 0 4px 8px rgba(0, 0, 0, 0.7);
+            }
+            .gold-gradient {
+                background: linear-gradient(135deg, #D4AF37 0%, #F9F295 50%, #D4AF37 100%);
+            }
+            .gold-gradient-hover {
+                background: linear-gradient(135deg, #B8860B 0%, #D4AF37 50%, #B8860B 100%);
+            }
+            .shimmer-text {
+                background: linear-gradient(90deg, #D4AF37 0%, #F9F295 25%, #D4AF37 50%, #F9F295 75%, #D4AF37 100%);
+                background-size: 200% auto;
+                -webkit-background-clip: text;
+                background-clip: text;
+                -webkit-text-fill-color: transparent;
+                animation: shimmer 2s linear infinite;
+            }
+            .bg-blur {
+                backdrop-filter: blur(8px);
+                -webkit-backdrop-filter: blur(8px);
+            }
+            .scrollbar-hide::-webkit-scrollbar {
+                display: none;
+            }
+            .scrollbar-hide {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+            }
+            /* 极简滚动动效 */
+            .reveal {
+                opacity: 0;
+                transition: all 0.6s ease-out;
+                will-change: transform, opacity;
+            }
+            .reveal.active {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            .reveal-up {
+                transform: translateY(30px);
+            }
+            /* 极简交互动效 */
+            .img-hover {
+                transition: transform 0.3s ease;
+            }
+            .img-hover:hover {
+                transform: scale(1.05);
+            }
+            .card-hover {
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            .card-hover:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
+            }
+        }
+
+        /* 全局平滑滚动 */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        /* 导航栏滚动效果 */
+        .navbar-scrolled {
+            background-color: rgba(15, 15, 15, 0.98) !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            padding-top: 6px !important;
+            padding-bottom: 6px !important;
+        }
+        
+        /* 按钮脉冲效果 */
+        .btn-pulse:hover {
+            animation: pulse-glow 1.5s infinite;
+        }
+        
+        /* 图片懒加载淡入效果 */
+        img {
+            transition: opacity 0.4s ease;
+            opacity: 0;
+        }
+        img.loaded {
+            opacity: 1;
+        }
+        .bg-img {
+            opacity: 1 !important;
+        }
+
+        /* 移动端菜单动画 */
+        #mobileMenu {
+            transition: transform 0.4s ease;
+        }
+
+        /* 回到顶部按钮 */
+        #backToTop {
+            transition: all 0.4s ease;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+        }
+        #backToTop.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+
+<!-- 背景图动态加载，不阻塞首屏 -->
+<body class="text-white font-sans scrollbar-hide" style="background: #0F0F0F;">
+    <div id="globalBg" class="fixed inset-0 z-0 opacity-0 transition-opacity duration-1s" 
+         style="background: url('./zbj.jpg') center/cover fixed; background-blend-mode: overlay;"></div>
+    
+    <!-- 顶部导航 -->
+    <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 bg-transparent py-4">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <div class="shimmer-text font-serif text-2xl font-bold tracking-wider">私享汇</div>
+            <button id="menuBtn" class="text-white text-xl hover:text-gold transition-colors duration-300 btn-pulse">
+                <i class="fa fa-bars"></i>
+            </button>
+        </div>
+        
+        <!-- 移动端菜单 -->
+        <div id="mobileMenu" class="fixed inset-0 bg-darker/98 bg-blur z-50 flex flex-col items-center justify-center transform translate-x-full">
+            <button id="closeMenu" class="absolute top-6 right-6 text-white text-2xl hover:text-gold transition-colors duration-300">
+                <i class="fa fa-times"></i>
+            </button>
+            <div class="flex flex-col items-center space-y-10 text-2xl">
+                <a href="#home" class="menu-link hover:text-gold transition-colors duration-300">首页</a>
+                <a href="#about" class="menu-link hover:text-gold transition-colors duration-300">关于我们</a>
+                <a href="#environment" class="menu-link hover:text-gold transition-colors duration-300">会所环境</a>
+                <a href="#chefs" class="menu-link hover:text-gold transition-colors duration-300">主厨团队</a>
+                <a href="#services" class="menu-link hover:text-gold transition-colors duration-300">特色服务</a>
+                <a href="#contact" class="menu-link hover:text-gold transition-colors duration-300">联系预约</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 英雄区域（首屏优先加载） -->
+    <section id="home" class="relative h-screen flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 bg-black/65 z-10"></div>
+        <!-- 首屏图片使用高优先级加载 -->
+        <img src="https://picsum.photos/id/1060/1920/1080" alt="会所大堂" 
+             class="absolute inset-0 w-full h-full object-cover" 
+             onload="this.classList.add('loaded')" loading="eager">
+             
+        <div class="container mx-auto px-6 z-20 text-center">
+            <div class="reveal reveal-up" style="transition-delay: 0.1s">
+                <h1 class="text-[clamp(2.8rem,10vw,5.5rem)] font-serif font-bold text-shadow-lg mb-6 leading-tight">
+                    私享汇<span class="text-goldlight">·</span>私人会所
+                </h1>
+                <div class="w-32 h-1.5 gold-gradient mx-auto mb-8 rounded-full animate-pulse-glow"></div>
+                <p class="text-[clamp(1.1rem,4vw,1.4rem)] text-gray-200 max-w-2xl mx-auto mb-12 text-shadow">
+                    尊享私密空间 · 品味珍馐美馔 · 尽享休闲时光
+                </p>
+                <a href="#contact" class="inline-block px-10 py-4 gold-gradient text-dark font-bold rounded-sm hover:gold-gradient-hover transition-all duration-300 transform hover:scale-105 hover:shadow-xl hover:shadow-gold/30 btn-pulse">
+                    立即预约
+                </a>
+            </div>
+        </div>
+        
+        <div class="absolute bottom-12 left-1/2 transform -translate-x-1/2 z-20">
+            <i class="fa fa-angle-down text-white text-3xl opacity-80"></i>
+        </div>
+    </section>
+
+    <!-- 关于我们 -->
+    <section id="about" class="py-24 relative overflow-hidden">
+        <img src="./gywm.jpg" alt="关于我们背景" 
+             class="bg-img absolute inset-0 w-full h-full object-cover opacity-40"
+             onload="this.classList.add('loaded')" loading="lazy">
+        <div class="absolute inset-0 bg-black/60 z-0"></div>
+        
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="text-center mb-20 reveal reveal-up">
+                <h2 class="text-[clamp(2rem,6vw,3rem)] font-serif font-bold mb-6">关于<span class="shimmer-text">私享汇</span></h2>
+                <div class="w-20 h-1.5 gold-gradient mx-auto rounded-full"></div>
+            </div>
+            
+            <div class="max-w-4xl mx-auto space-y-8">
+                <p class="text-gray-300 leading-relaxed text-lg reveal reveal-up" style="transition-delay: 0.2s">
+                    私享汇是专为城市精英打造的高端私人会所，坐落于城市核心地段，闹中取静，是商务宴请、亲友聚会、私人派对的理想之选。
+                </p>
+                <p class="text-gray-300 leading-relaxed text-lg reveal reveal-up" style="transition-delay: 0.4s">
+                    我们秉承"至臻服务，极致体验"的理念，为每一位贵宾提供专属定制化服务。从食材甄选到菜品呈现，从环境布置到细节服务，我们追求完美，只为给您带来难忘的私享时光。
+                </p>
+                <p class="text-gray-300 leading-relaxed text-lg reveal reveal-up" style="transition-delay: 0.6s">
+                    <span class="text-gold font-bold text-xl">凡在本会所消费用餐，即可免费畅享麻将、台球、KTV等娱乐设施</span>，让您在品尝美食的同时，尽享休闲娱乐的无限乐趣。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 会所环境（所有图片懒加载） -->
+    <section id="environment" class="py-24">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-20 reveal reveal-up">
+                <h2 class="text-[clamp(2rem,6vw,3rem)] font-serif font-bold mb-6">会所<span class="shimmer-text">环境</span></h2>
+                <div class="w-20 h-1.5 gold-gradient mx-auto rounded-full"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- 环境图片1 -->
+                <div class="group overflow-hidden rounded-lg shadow-xl card-hover reveal reveal-up" style="transition-delay: 0.1s">
+                    <div class="relative overflow-hidden h-72">
+                        <img src="https://picsum.photos/id/271/800/600" alt="豪华包间" 
+                             class="w-full h-full object-cover img-hover" 
+                             onload="this.classList.add('loaded')" loading="lazy">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end">
+                            <div class="p-6 transform translate-y-6 group-hover:translate-y-0 transition-transform duration-500">
+                                <h3 class="text-2xl font-bold text-white mb-2">豪华包间</h3>
+                                <p class="text-gray-300">私密独立空间，尊享专属服务</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 环境图片2 -->
+                <div class="group overflow-hidden rounded-lg shadow-xl card-hover reveal reveal-up" style="transition-delay: 0.2s">
+                    <div class="relative overflow-hidden h-72">
+                        <img src="https://picsum.photos/id/366/800/600" alt="餐厅大厅" 
+                             class="w-full h-full object-cover img-hover" 
+                             onload="this.classList.add('loaded')" loading="lazy">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end">
+                            <div class="p-6 transform translate-y-6 group-hover:translate-y-0 transition-transform duration-500">
+                                <h3 class="text-2xl font-bold text-white mb-2">餐厅大厅</h3>
+                                <p class="text-gray-300">典雅大气，品味非凡</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 环境图片3 -->
+                <div class="group overflow-hidden rounded-lg shadow-xl card-hover reveal reveal-up" style="transition-delay: 0.3s">
+                    <div class="relative overflow-hidden h-72">
+                        <img src="https://picsum.photos/id/164/800/600" alt="茶艺区" 
+                             class="w-full h-full object-cover img-hover" 
+                             onload="this.classList.add('loaded')" loading="lazy">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end">
+                            <div class="p-6 transform translate-y-6 group-hover:translate-y-0 transition-transform duration-500">
+                                <h3 class="text-2xl font-bold text-white mb-2">茶艺区</h3>
+                                <p class="text-gray-300">品茗论道，静享时光</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 环境图片4 -->
+                <div class="group overflow-hidden rounded-lg shadow-xl card-hover reveal reveal-up" style="transition-delay: 0.4s">
+                    <div class="relative overflow-hidden h-72">
+                        <img src="https://picsum.photos/id/260/800/600" alt="麻将室" 
+                             class="w-full h-full object-cover img-hover" 
+                             onload="this.classList.add('loaded')" loading="lazy">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end">
+                            <div class="p-6 transform translate-y-6 group-hover:translate-y-0 transition-transform duration-500">
+                                <h3 class="text-2xl font-bold text-white mb-2">麻将室</h3>
+                                <p class="text-gray-300">自动麻将桌，舒适座椅</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 环境图片5 -->
+                <div class="group overflow-hidden rounded-lg shadow-xl card-hover reveal reveal-up" style="transition-delay: 0.5s">
+                    <div class="relative overflow-hidden h-72">
+                        <img src="https://picsum.photos/id/170/800/600" alt="台球区" 
+                             class="w-full h-full object-cover img-hover" 
+                             onload="this.classList.add('loaded')" loading="lazy">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end">
+                            <div class="p-6 transform translate-y-6 group-hover:translate-y-0 transition-transform duration-500">
+                                <h3 class="text-2xl font-bold text-white mb-2">台球区</h3>
+                                <p class="text-gray-300">标准球台，专业设备</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 环境图片6 -->
+                <div class="group overflow-hidden rounded-lg shadow-xl card-hover reveal reveal-up" style="transition-delay: 0.6s">
+                    <div class="relative overflow-hidden h-72">
+                        <img src="https://picsum.photos/id/240/800/600" alt="KTV包间" 
+                             class="w-full h-full object-cover img-hover" 
+                             onload="this.classList.add('loaded')" loading="lazy">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end">
+                            <div class="p-6 transform translate-y-6 group-hover:translate-y-0 transition-transform duration-500">
+                                <h3 class="text-2xl font-bold text-white mb-2">KTV包间</h3>
+                                <p class="text-gray-300">专业音响，海量曲库</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 主厨团队 -->
+    <section id="chefs" class="py-24">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-20 reveal reveal-up">
+                <h2 class="text-[clamp(2rem,6vw,3rem)] font-serif font-bold mb-6">主厨<span class="shimmer-text">团队</span></h2>
+                <div class="w-20 h-1.5 gold-gradient mx-auto rounded-full"></div>
+                <p class="text-gray-400 mt-6 max-w-2xl mx-auto text-lg">
+                    <span class="text-gold font-bold">点击主厨卡片</span>，查看他们的拿手好菜
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                <!-- 主厨1 -->
+                <div class="chef-card bg-darker rounded-lg overflow-hidden shadow-2xl card-hover reveal reveal-up" data-chef="chef1" style="transition-delay: 0.1s">
+                    <div class="h-80 overflow-hidden">
+                        <img src="https://picsum.photos/id/1005/600/800" alt="张主厨" 
+                             class="w-full h-full object-cover img-hover" 
+                             onload="this.classList.add('loaded')" loading="lazy">
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-2xl font-bold mb-2">张建国</h3>
+                        <p class="text-gold mb-4 text-lg">行政总厨 · 25年从业经验</p>
+                        <p class="text-gray-400">
+                            精通粤菜、鲁菜，擅长融合创新，曾在多家五星级酒店担任主厨。
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- 主厨2 -->
+                <div class="chef-card bg-darker rounded-lg overflow-hidden shadow-2xl card-hover reveal reveal-up" data-chef="chef2" style="transition-delay: 0.3s">
+                    <div class="h-80 overflow-hidden">
+                        <img src="https://picsum.photos/id/1000/600/800" alt="李主厨" 
+                             class="w-full h-full object-cover img-hover" 
+                             onload="this.classList.add('loaded')" loading="lazy">
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-2xl font-bold mb-2">李婉婷</h3>
+                        <p class="text-gold mb-4 text-lg">川菜主厨 · 18年从业经验</p>
+                        <p class="text-gray-400">
+                            川菜世家传人，对传统川菜有深入研究，同时擅长创新川菜。
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- 主厨3 -->
+                <div class="chef-card bg-darker rounded-lg overflow-hidden shadow-2xl card-hover reveal reveal-up" data-chef="chef3" style="transition-delay: 0.5s">
+                    <div class="h-80 overflow-hidden">
+                        <img src="https://picsum.photos/id/1074/600/800" alt="王主厨" 
+                             class="w-full h-full object-cover img-hover" 
+                             onload="this.classList.add('loaded')" loading="lazy">
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-2xl font-bold mb-2">王海涛</h3>
+                        <p class="text-gold mb-4 text-lg">淮扬菜主厨 · 20年从业经验</p>
+                        <p class="text-gray-400">
+                            淮扬菜大师嫡传弟子，刀工精湛，擅长制作精细淮扬名菜。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 特色服务 -->
+    <section id="services" class="py-24">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-20 reveal reveal-up">
+                <h2 class="text-[clamp(2rem,6vw,3rem)] font-serif font-bold mb-6">特色<span class="shimmer-text">服务</span></h2>
+                <div class="w-20 h-1.5 gold-gradient mx-auto rounded-full"></div>
+            </div>
+            
+            <div class="max-w-5xl mx-auto">
+                <div class="bg-dark/90 rounded-lg p-10 mb-10 shadow-2xl reveal reveal-up">
+                    <div class="flex items-center mb-8">
+                        <div class="w-14 h-14 rounded-full bg-gold flex items-center justify-center mr-6">
+                            <i class="fa fa-cutlery text-dark text-2xl"></i>
+                        </div>
+                        <h3 class="text-3xl font-bold">随餐赠送三大娱乐</h3>
+                    </div>
+                    <p class="text-gray-300 mb-10 text-xl">
+                        凡在本会所消费任意正餐套餐，即可<span class="text-gold font-bold">免费畅享</span>以下娱乐设施，让您的聚会更加精彩：
+                    </p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <!-- 麻将室 -->
+                        <div class="entertainment-card bg-darker rounded-lg overflow-hidden shadow-xl card-hover reveal reveal-up" data-entertainment="majiang" style="transition-delay: 0.1s">
+                            <div class="h-56 overflow-hidden">
+                                <img src="https://picsum.photos/id/260/600/400" alt="豪华麻将室" 
+                                     class="w-full h-full object-cover img-hover" 
+                                     onload="this.classList.add('loaded')" loading="lazy">
+                            </div>
+                            <div class="p-8 text-center">
+                                <i class="fa fa-trophy text-gold text-4xl mb-4"></i>
+                                <h4 class="font-bold text-2xl mb-3">豪华麻将室</h4>
+                                <p class="text-gray-400">自动麻将桌，独立包间</p>
+                                <p class="text-gold text-sm mt-3">点击查看更多图片</p>
+                            </div>
+                        </div>
+                        
+                        <!-- 台球区 -->
+                        <div class="entertainment-card bg-darker rounded-lg overflow-hidden shadow-xl card-hover reveal reveal-up" data-entertainment="taiqiu" style="transition-delay: 0.3s">
+                            <div class="h-56 overflow-hidden">
+                                <img src="https://picsum.photos/id/170/600/400" alt="标准台球区" 
+                                     class="w-full h-full object-cover img-hover" 
+                                     onload="this.classList.add('loaded')" loading="lazy">
+                            </div>
+                            <div class="p-8 text-center">
+                                <i class="fa fa-bullseye text-gold text-4xl mb-4"></i>
+                                <h4 class="font-bold text-2xl mb-3">标准台球区</h4>
+                                <p class="text-gray-400">专业球台，免费球杆</p>
+                                <p class="text-gold text-sm mt-3">点击查看更多图片</p>
+                            </div>
+                        </div>
+                        
+                        <!-- KTV包间 -->
+                        <div class="entertainment-card bg-darker rounded-lg overflow-hidden shadow-xl card-hover reveal reveal-up" data-entertainment="ktv" style="transition-delay: 0.5s">
+                            <div class="h-56 overflow-hidden">
+                                <img src="https://picsum.photos/id/240/600/400" alt="KTV包间" 
+                                     class="w-full h-full object-cover img-hover" 
+                                     onload="this.classList.add('loaded')" loading="lazy">
+                            </div>
+                            <div class="p-8 text-center">
+                                <i class="fa fa-music text-gold text-4xl mb-4"></i>
+                                <h4 class="font-bold text-2xl mb-3">KTV包间</h4>
+                                <p class="text-gray-400">专业音响，海量曲库</p>
+                                <p class="text-gold text-sm mt-3">点击查看更多图片</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    <!-- 专属定制 -->
+                    <div class="service-card bg-dark/90 rounded-lg overflow-hidden shadow-xl card-hover reveal reveal-up" data-service="custom" style="transition-delay: 0.1s">
+                        <div class="h-48 overflow-hidden">
+                            <img src="https://picsum.photos/id/276/600/400" alt="专属定制" 
+                                 class="w-full h-full object-cover img-hover" 
+                                 onload="this.classList.add('loaded')" loading="lazy">
+                        </div>
+                        <div class="p-8">
+                            <div class="flex items-center mb-5">
+                                <i class="fa fa-calendar-check-o text-gold text-2xl mr-4"></i>
+                                <h4 class="text-2xl font-bold">专属定制</h4>
+                            </div>
+                            <p class="text-gray-400">
+                                根据您的需求定制菜单、布置场地，提供个性化服务体验。
+                            </p>
+                            <p class="text-gold text-sm mt-3">点击查看更多图片</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 私密空间 -->
+                    <div class="service-card bg-dark/90 rounded-lg overflow-hidden shadow-xl card-hover reveal reveal-up" data-service="private" style="transition-delay: 0.2s">
+                        <div class="h-48 overflow-hidden">
+                            <img src="https://picsum.photos/id/271/600/400" alt="私密空间" 
+                                 class="w-full h-full object-cover img-hover" 
+                                 onload="this.classList.add('loaded')" loading="lazy">
+                        </div>
+                        <div class="p-8">
+                            <div class="flex items-center mb-5">
+                                <i class="fa fa-lock text-gold text-2xl mr-4"></i>
+                                <h4 class="text-2xl font-bold">私密空间</h4>
+                            </div>
+                            <p class="text-gray-400">
+                                独立包间设计，保障您的隐私，让您安心享受聚会时光。
+                            </p>
+                            <p class="text-gold text-sm mt-3">点击查看更多图片</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 专属管家 -->
+                    <div class="service-card bg-dark/90 rounded-lg overflow-hidden shadow-xl card-hover reveal reveal-up" data-service="butler" style="transition-delay: 0.3s">
+                        <div class="h-48 overflow-hidden">
+                            <img src="https://picsum.photos/id/180/600/400" alt="专属管家" 
+                                 class="w-full h-full object-cover img-hover" 
+                                 onload="this.classList.add('loaded')" loading="lazy">
+                        </div>
+                        <div class="p-8">
+                            <div class="flex items-center mb-5">
+                                <i class="fa fa-user-o text-gold text-2xl mr-4"></i>
+                                <h4 class="text-2xl font-bold">专属管家</h4>
+                            </div>
+                            <p class="text-gray-400">
+                                每位贵宾配备专属管家，全程贴心服务，满足您的一切需求。
+                            </p>
+                            <p class="text-gold text-sm mt-3">点击查看更多图片</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 免费停车 -->
+                    <div class="service-card bg-dark/90 rounded-lg overflow-hidden shadow-xl card-hover reveal reveal-up" data-service="parking" style="transition-delay: 0.4s">
+                        <div class="h-48 overflow-hidden">
+                            <img src="https://picsum.photos/id/133/600/400" alt="免费停车" 
+                                 class="w-full h-full object-cover img-hover" 
+                                 onload="this.classList.add('loaded')" loading="lazy">
+                        </div>
+                        <div class="p-8">
+                            <div class="flex items-center mb-5">
+                                <i class="fa fa-car text-gold text-2xl mr-4"></i>
+                                <h4 class="text-2xl font-bold">免费停车</h4>
+                            </div>
+                            <p class="text-gray-400">
+                                提供充足的免费停车位，让您无需为停车烦恼。
+                            </p>
+                            <p class="text-gold text-sm mt-3">点击查看更多图片</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 联系预约 -->
+    <section id="contact" class="py-24 relative overflow-hidden">
+        <div class="absolute inset-0 bg-black/65 z-0"></div>
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="text-center mb-20 reveal reveal-up">
+                <h2 class="text-[clamp(2rem,6vw,3rem)] font-serif font-bold mb-6">联系<span class="shimmer-text">预约</span></h2>
+                <div class="w-20 h-1.5 gold-gradient mx-auto rounded-full"></div>
+            </div>
+            
+            <div class="max-w-5xl mx-auto bg-darker/90 rounded-lg overflow-hidden shadow-2xl reveal reveal-up">
+                <div class="grid grid-cols-1 md:grid-cols-2">
+                    <div class="p-10 md:p-14">
+                        <h3 class="text-3xl font-bold mb-10 text-center md:text-left">预约方式</h3>
+                        <div class="space-y-10">
+                            <div class="flex items-start group reveal reveal-up" style="transition-delay: 0.1s">
+                                <div class="w-14 h-14 rounded-full bg-gold/20 flex items-center justify-center mr-6 flex-shrink-0 group-hover:bg-gold transition-colors duration-400">
+                                    <i class="fa fa-phone text-gold group-hover:text-dark transition-colors duration-400 text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold mb-2 text-xl">电话预约</h4>
+                                    <a href="tel:031188888888" class="text-gray-300 hover:text-gold transition-colors duration-300 block text-lg">0311-88888888</a>
+                                    <a href="tel:13800008888" class="text-gray-300 hover:text-gold transition-colors duration-300 block text-lg">138-0000-8888</a>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start group reveal reveal-up" style="transition-delay: 0.3s">
+                                <div class="w-14 h-14 rounded-full bg-gold/20 flex items-center justify-center mr-6 flex-shrink-0 group-hover:bg-gold transition-colors duration-400">
+                                    <i class="fa fa-map-marker text-gold group-hover:text-dark transition-colors duration-400 text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold mb-2 text-xl">会所地址</h4>
+                                    <a href="https://apis.map.qq.com/uri/v1/routeplan?type=drive&to=大石门商务D座&tocoord=38.0193,114.5472&referer=私享汇私人会所" target="_blank" class="text-gray-300 hover:text-gold transition-colors duration-300 block text-lg">
+                                        河北省石家庄市东港路<br>大石门商务D座5层
+                                        <span class="text-gold text-sm block mt-2">
+                                            <i class="fa fa-location-arrow mr-1"></i>点击导航
+                                        </span>
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start group reveal reveal-up" style="transition-delay: 0.5s">
+                                <div class="w-14 h-14 rounded-full bg-gold/20 flex items-center justify-center mr-6 flex-shrink-0 group-hover:bg-gold transition-colors duration-400">
+                                    <i class="fa fa-clock-o text-gold group-hover:text-dark transition-colors duration-400 text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold mb-2 text-xl">营业时间</h4>
+                                    <p class="text-gray-300 text-lg">周一至周日 10:00 - 24:00</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gold/10 p-10 md:p-14 flex flex-col items-center justify-center reveal reveal-up" style="transition-delay: 0.2s">
+                        <h3 class="text-3xl font-bold mb-8 text-center">微信预约</h3>
+                        <div class="bg-white p-5 rounded-lg shadow-2xl mb-8 transform hover:scale-105 transition-transform duration-300">
+                            <img src="./2wm.jpg" alt="微信二维码" 
+                                 class="w-52 h-52 object-cover rounded" 
+                                 onload="this.classList.add('loaded')" loading="lazy">
+                        </div>
+                        <p class="text-gray-300 text-center text-lg">
+                            扫描上方二维码<br>添加微信即可预约
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="py-10 relative overflow-hidden border-t border-gray-800">
+        <img src="./zbj.jpg" alt="页脚背景" 
+             class="bg-img absolute inset-0 w-full h-full object-cover opacity-25"
+             onload="this.classList.add('loaded')" loading="lazy">
+        <div class="absolute inset-0 bg-black/85 z-0"></div>
+        
+        <div class="container mx-auto px-6 text-center relative z-10 reveal reveal-up">
+            <div class="shimmer-text font-serif text-3xl font-bold tracking-wider mb-6">私享汇</div>
+            <p class="text-gray-500 mb-6 text-lg">尊享私密空间 · 品味珍馐美馔 · 尽享休闲时光</p>
+            <p class="text-gray-600 text-sm">© 2026 私享汇私人会所 版权所有</p>
+        </div>
+    </footer>
+
+    <!-- 回到顶部按钮 -->
+    <button id="backToTop" class="fixed bottom-8 right-8 w-14 h-14 rounded-full gold-gradient text-dark flex items-center justify-center shadow-xl z-40 btn-pulse">
+        <i class="fa fa-arrow-up text-xl"></i>
+    </button>
+
+    <!-- 厨师拿手菜模态框 -->
+    <div id="chefModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-400">
+        <div class="absolute inset-0 bg-black/85 bg-blur" id="modalOverlay"></div>
+        <div class="relative bg-dark rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto transform scale-90 transition-transform duration-400 shadow-2xl" id="modalContent">
+            <button id="closeModal" class="absolute top-4 right-4 text-white text-2xl hover:text-gold transition-colors duration-300 z-10">
+                <i class="fa fa-times"></i>
+            </button>
+            <div class="p-8" id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- 图片画廊模态框 -->
+    <div id="galleryModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 opacity-0 pointer-events-none transition-opacity duration-400">
+        <div class="absolute inset-0 bg-black/90 bg-blur" id="galleryOverlay"></div>
+        <div class="relative max-w-5xl w-full max-h-[90vh] transform scale-90 transition-transform duration-400" id="galleryContent">
+            <button id="closeGallery" class="absolute top-4 right-4 text-white text-3xl hover:text-gold transition-colors duration-300 z-20">
+                <i class="fa fa-times"></i>
+            </button>
+            <button id="prevImage" class="absolute left-4 top-1/2 transform -translate-y-1/2 text-white text-4xl hover:text-gold transition-colors duration-300 z-20">
+                <i class="fa fa-angle-left"></i>
+            </button>
+            <button id="nextImage" class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white text-4xl hover:text-gold transition-colors duration-300 z-20">
+                <i class="fa fa-angle-right"></i>
+            </button>
+            <div class="text-center mb-4 z-10 relative">
+                <h3 id="galleryTitle" class="text-2xl font-bold text-white"></h3>
+                <p id="galleryCounter" class="text-gray-300 mt-1"></p>
+            </div>
+            <div class="flex items-center justify-center h-[70vh]">
+                <img id="galleryImage" src="" alt="" class="max-w-full max-h-full object-contain rounded-lg shadow-2xl" onload="this.classList.add('loaded')">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面加载完成后显示背景图
+        window.addEventListener('load', () => {
+            document.getElementById('globalBg').style.opacity = '1';
+            
+            // 触发首屏动画
+            document.querySelector('#home .reveal').classList.add('active');
+            
+            // 预加载关键本地图片
+            const preloadImages = ['./zbj.jpg', './gywm.jpg', './2wm.jpg', './wxkp.jpg'];
+            preloadImages.forEach(src => {
+                const img = new Image();
+                img.src = src;
+            });
+        });
+
+        // 导航栏滚动效果
+        const navbar = document.getElementById('navbar');
+        const backToTop = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 80) {
+                navbar.classList.add('navbar-scrolled');
+                backToTop.classList.add('visible');
+            } else {
+                navbar.classList.remove('navbar-scrolled');
+                backToTop.classList.remove('visible');
+            }
+        });
+
+        // 回到顶部功能
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // 移动端菜单
+        const menuBtn = document.getElementById('menuBtn');
+        const closeMenu = document.getElementById('closeMenu');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const menuLinks = document.querySelectorAll('.menu-link');
+
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.remove('translate-x-full');
+            document.body.style.overflow = 'hidden';
+        });
+
+        closeMenu.addEventListener('click', () => {
+            mobileMenu.classList.add('translate-x-full');
+            document.body.style.overflow = '';
+        });
+
+        menuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('translate-x-full');
+                document.body.style.overflow = '';
+            });
+        });
+
+        // 滚动触发动画
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -30px 0px'
+        });
+
+        revealElements.forEach(element => {
+            revealObserver.observe(element);
+        });
+
+        // 厨师拿手菜数据
+        const chefDishes = {
+            chef1: {
+                name: "张建国",
+                title: "行政总厨",
+                dishes: [
+                    { name: "鲍汁扣辽参", description: "精选优质辽参，配以秘制鲍汁慢火煨制", price: "298元/位", image: "https://picsum.photos/id/292/600/400" },
+                    { name: "红烧大鲍翅", description: "选用上等鱼翅，传统工艺烹制", price: "398元/位", image: "https://picsum.photos/id/488/600/400" },
+                    { name: "葱烧海参", description: "经典鲁菜代表，海参软糯入味", price: "198元/例", image: "https://picsum.photos/id/429/600/400" },
+                    { name: "糖醋黄河鲤鱼", description: "选用新鲜黄河鲤鱼，外酥里嫩", price: "168元/例", image: "https://picsum.photos/id/493/600/400" }
+                ]
+            },
+            chef2: {
+                name: "李婉婷",
+                title: "川菜主厨",
+                dishes: [
+                    { name: "水煮鱼", description: "选用鲜活草鱼，麻辣鲜香", price: "128元/例", image: "https://picsum.photos/id/494/600/400" },
+                    { name: "麻婆豆腐", description: "传统川菜经典，麻辣鲜香烫", price: "48元/例", image: "https://picsum.photos/id/495/600/400" },
+                    { name: "夫妻肺片", description: "精选牛腱肉、牛舌，红油调制", price: "88元/例", image: "https://picsum.photos/id/496/600/400" },
+                    { name: "辣子鸡", description: "外酥里嫩，麻辣鲜香", price: "98元/例", image: "https://picsum.photos/id/497/600/400" }
+                ]
+            },
+            chef3: {
+                name: "王海涛",
+                title: "淮扬菜主厨",
+                dishes: [
+                    { name: "扬州炒饭", description: "粒粒分明，配料丰富", price: "68元/例", image: "https://picsum.photos/id/498/600/400" },
+                    { name: "清炖狮子头", description: "肉质鲜嫩，汤清味美", price: "128元/例", image: "https://picsum.photos/id/499/600/400" },
+                    { name: "松鼠桂鱼", description: "外酥里嫩，酸甜适口", price: "268元/例", image: "https://picsum.photos/id/500/600/400" },
+                    { name: "大煮干丝", description: "刀工精湛，汤鲜料足", price: "88元/例", image: "https://picsum.photos/id/501/600/400" }
+                ]
+            }
+        };
+
+        // 图片画廊数据
+        const galleryData = {
+            majiang: { title: "豪华麻将室", images: ["https://picsum.photos/id/260/1200/800", "https://picsum.photos/id/261/1200/800", "https://picsum.photos/id/262/1200/800"] },
+            taiqiu: { title: "标准台球区", images: ["https://picsum.photos/id/170/1200/800", "https://picsum.photos/id/171/1200/800", "https://picsum.photos/id/172/1200/800"] },
+            ktv: { title: "KTV包间", images: ["https://picsum.photos/id/240/1200/800", "https://picsum.photos/id/241/1200/800", "https://picsum.photos/id/242/1200/800"] },
+            custom: { title: "专属定制服务", images: ["https://picsum.photos/id/276/1200/800", "https://picsum.photos/id/277/1200/800", "https://picsum.photos/id/278/1200/800"] },
+            private: { title: "私密空间", images: ["https://picsum.photos/id/271/1200/800", "https://picsum.photos/id/272/1200/800", "https://picsum.photos/id/273/1200/800"] },
+            butler: { title: "专属管家服务", images: ["https://picsum.photos/id/180/1200/800", "https://picsum.photos/id/181/1200/800", "https://picsum.photos/id/182/1200/800"] },
+            parking: { title: "免费停车服务", images: ["https://picsum.photos/id/133/1200/800", "https://picsum.photos/id/134/1200/800", "https://picsum.photos/id/135/1200/800"] }
+        };
+
+        // 厨师模态框功能
+        const chefModal = document.getElementById('chefModal');
+        const modalContent = document.getElementById('modalContent');
+        const modalBody = document.getElementById('modalBody');
+        const closeModal = document.getElementById('closeModal');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const chefCards = document.querySelectorAll('.chef-card');
+
+        function openModal(chefId) {
+            const chef = chefDishes[chefId];
+            let html = `<h2 class="text-3xl font-serif font-bold mb-6 text-center">${chef.name} · ${chef.title}</h2><div class="grid grid-cols-1 md:grid-cols-2 gap-6">`;
+            
+            chef.dishes.forEach(dish => {
+                html += `
+                    <div class="bg-darker rounded-lg overflow-hidden shadow-lg card-hover">
+                        <img src="${dish.image}" alt="${dish.name}" class="w-full h-48 object-cover img-hover" onload="this.classList.add('loaded')">
+                        <div class="p-4">
+                            <h3 class="text-xl font-bold mb-2 text-gold">${dish.name}</h3>
+                            <p class="text-gray-300 mb-2">${dish.description}</p>
+                            <p class="text-white font-bold">${dish.price}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            modalBody.innerHTML = html;
+            
+            chefModal.classList.remove('opacity-0', 'pointer-events-none');
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => modalContent.classList.remove('scale-90'), 50);
+        }
+
+        function closeModalFunc() {
+            modalContent.classList.add('scale-90');
+            setTimeout(() => {
+                chefModal.classList.add('opacity-0', 'pointer-events-none');
+                document.body.style.overflow = '';
+            }, 300);
+        }
+
+        chefCards.forEach(card => {
+            card.addEventListener('click', () => openModal(card.getAttribute('data-chef')));
+        });
+
+        closeModal.addEventListener('click', closeModalFunc);
+        modalOverlay.addEventListener('click', closeModalFunc);
+
+        // 图片画廊功能
+        const galleryModal = document.getElementById('galleryModal');
+        const galleryContent = document.getElementById('galleryContent');
+        const galleryOverlay = document.getElementById('galleryOverlay');
+        const closeGallery = document.getElementById('closeGallery');
+        const galleryTitle = document.getElementById('galleryTitle');
+        const galleryImage = document.getElementById('galleryImage');
+        const galleryCounter = document.getElementById('galleryCounter');
+        const prevImage = document.getElementById('prevImage');
+        const nextImage = document.getElementById('nextImage');
+        const entertainmentCards = document.querySelectorAll('.entertainment-card, .service-card');
+        
+        let currentGallery = '';
+        let currentImageIndex = 0;
+
+        function openGallery(type) {
+            currentGallery = type;
+            currentImageIndex = 0;
+            const gallery = galleryData[type];
+            galleryTitle.textContent = gallery.title;
+            updateGalleryImage();
+            
+            galleryModal.classList.remove('opacity-0', 'pointer-events-none');
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => galleryContent.classList.remove('scale-90'), 50);
+        }
+
+        function closeGalleryFunc() {
+            galleryContent.classList.add('scale-90');
+            setTimeout(() => {
+                galleryModal.classList.add('opacity-0', 'pointer-events-none');
+                document.body.style.overflow = '';
+            }, 300);
+        }
+
+        function updateGalleryImage() {
+            const gallery = galleryData[currentGallery];
+            galleryImage.src = gallery.images[currentImageIndex];
+            galleryCounter.textContent = `${currentImageIndex + 1}/${gallery.images.length}`;
+        }
+
+        function changeImage(direction) {
+            const gallery = galleryData[currentGallery];
+            currentImageIndex += direction;
+            
+            if (currentImageIndex < 0) currentImageIndex = gallery.images.length - 1;
+            else if (currentImageIndex >= gallery.images.length) currentImageIndex = 0;
+            
+            updateGalleryImage();
+        }
+
+        entertainmentCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const type = card.getAttribute('data-entertainment') || card.getAttribute('data-service');
+                openGallery(type);
+            });
+        });
+
+        closeGallery.addEventListener('click', closeGalleryFunc);
+        galleryOverlay.addEventListener('click', closeGalleryFunc);
+        prevImage.addEventListener('click', () => changeImage(-1));
+        nextImage.addEventListener('click', () => changeImage(1));
+
+        // 键盘ESC关闭模态框
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModalFunc();
+                closeGalleryFunc();
+            }
+        });
+    </script>
+</body>
+</html>
